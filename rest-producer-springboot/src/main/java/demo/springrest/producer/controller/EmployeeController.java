@@ -1,7 +1,7 @@
 package demo.springrest.producer.controller;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,32 +16,37 @@ import javax.ws.rs.PathParam;
 
 @RestController
 
-public class EmployeeController {
-    static List<Employee> employeesList = new ArrayList<Employee>();
+public class EmployeeController { 
+    static Map<Integer, Employee> employeesMap = new HashMap<Integer, Employee>();
 
     static {
-        employeesList.add(new Employee(1, "Michael", "Novo", "howtodoinjava@gmail.com"));
-        employeesList.add(new Employee(2, "David", "Johnson", "howtodoinjava@gmail.com"));
+        employeesMap.put(1, new Employee(1, "Michael", "Novo", "howtodoinjava@gmail.com"));
+        employeesMap.put(2, new Employee(2, "David", "Johnson", "howtodoinjava@gmail.com"));
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Employee> getEmployees() {
-        return employeesList;
+        return new ArrayList(employeesMap.values());
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
     public ResponseEntity deleteEmployees(@PathVariable(value = "id") Integer id) {
-        boolean removed = employeesList.removeIf(p -> p.getId().intValue() == id.intValue());
-        System.out.println("removed=" + removed);
-        if (!removed) {
+        Employee remove=employeesMap.remove(id);
+        System.out.println("removed=" + remove );
+        if (remove == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/add")
-    public ResponseEntity addEmployees(@RequestBody Employee input) {
-        employeesList.add(input);
+    @RequestMapping(method = RequestMethod.POST, value = "/add")
+    public Employee addEmployees(@RequestBody Employee input) { 
+        employeesMap.put(input.getId(), input);
+        return input;
+    }
+    @RequestMapping(method = RequestMethod.PUT, value = "/update")
+    public ResponseEntity updateEmployees(@RequestBody Employee input) {
+		employeesMap.put(input.getId(), input);
         return ResponseEntity.ok().build();
     }
 

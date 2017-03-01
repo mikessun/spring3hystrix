@@ -27,6 +27,7 @@
 <h2>Contact Manager</h2>
 
 <form:form method="post" action="add.html" commandName="employee">
+	<form:errors path="*" />
 
 	<table>
 	<tr>
