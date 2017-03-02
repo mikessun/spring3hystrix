@@ -26,11 +26,22 @@ public class EmployeeController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Employee> getEmployees() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return new ArrayList(employeesMap.values());
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
     public ResponseEntity deleteEmployees(@PathVariable(value = "id") Integer id) {
+		
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Employee remove=employeesMap.remove(id);
         System.out.println("removed=" + remove );
         if (remove == null) {
@@ -41,11 +52,23 @@ public class EmployeeController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/add")
     public Employee addEmployees(@RequestBody Employee input) { 
+	
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         employeesMap.put(input.getId(), input);
         return input;
     }
     @RequestMapping(method = RequestMethod.PUT, value = "/update")
     public ResponseEntity updateEmployees(@RequestBody Employee input) {
+		
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 		employeesMap.put(input.getId(), input);
         return ResponseEntity.ok().build();
     }
