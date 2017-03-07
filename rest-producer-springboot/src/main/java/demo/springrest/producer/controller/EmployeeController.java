@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import demo.springrest.producer.model.Employee;
 
 import javax.ws.rs.PathParam;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 
 public class EmployeeController { 
@@ -26,8 +28,14 @@ public class EmployeeController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<Employee> getEmployees() {
+        int random = ((int) Math.random() * 100);
+		if (random < 0) {
+			random = -1 * random;
+		}
+		random = random % 2;
+		log.info("requested: {}, random={}", "getEmployees", random);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(2000*random);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -36,6 +44,7 @@ public class EmployeeController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
     public ResponseEntity deleteEmployees(@PathVariable(value = "id") Integer id) {
+		log.info("requested: {}", "deleteEmployees", id);
 		
         try {
             Thread.sleep(2000);
@@ -52,6 +61,7 @@ public class EmployeeController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/add")
     public Employee addEmployees(@RequestBody Employee input) { 
+		log.info("requested: {}, {}", "addEmployees", input.getId());
 	
         try {
             Thread.sleep(2000);
@@ -63,6 +73,7 @@ public class EmployeeController {
     }
     @RequestMapping(method = RequestMethod.PUT, value = "/update")
     public ResponseEntity updateEmployees(@RequestBody Employee input) {
+		log.info("requested: {}, {}", "updateEmployees", input.getId());
 		
         try {
             Thread.sleep(2000);

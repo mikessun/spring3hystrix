@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.developmentsprint.spring.breaker.annotations.CircuitBreaker;
 import com.developmentsprint.spring.breaker.annotations.CircuitProperty;
@@ -68,15 +69,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     @CircuitBreaker(
             circuitManager = "circuitManager",
             properties = {
-                    @CircuitProperty(key = "execution.isolation.strategy", value = "SEMAPHORE"),
-                    @CircuitProperty(key = "execution.isolation.semaphore.maxConcurrentRequests", value = "10"),
+                    @CircuitProperty(key = "execution.isolation.strategy", value = "THREAD"),
                     @CircuitProperty(key = "circuitBreaker.requestVolumeThreshold", value = "1"),
 
-                    @CircuitProperty(key = "fallback", value = "defaultResponse"),
-                    @CircuitProperty(key = "circuitBreaker.errorThresholdPercentage", value = "1")
+                    @CircuitProperty(key = "fallbackClass", value = "demo.spring3rest.consumer.hystrix" +
+                            ".FallbackFailsFast"),
+                    @CircuitProperty(key = "metrics.rollingStats.timeInMilliseconds", value = "60000"),
+                    @CircuitProperty(key = "circuitBreaker.requestVolumeThreshold", value = "10"),
+
+                    @CircuitProperty(key = "circuitBreaker.errorThresholdPercentage", value = "20")
             })
     public List<Employee> listEmployee() {
-
+        log.info("called: {}", "listEmployee");
 /*        ResponseEntity<List<Employee>> response =
                 new RestTemplate().exchange(url + getAction,
                         HttpMethod.GET, null, new ParameterizedTypeReference<List<Employee>>() {
@@ -88,11 +92,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public ResponseEntity removeEmployee(Integer id) {
+        log.info("called: {}", "listEmployee");
         template.delete(url + deleteAction, id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     private String defaultResponse() {
+        log.info("called: {}", "listEmployee");
         String message = "remote call failed";
         log.error(message);
         throw new RuntimeException(message);
